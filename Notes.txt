@@ -1,0 +1,9 @@
+* deprecate a class method
+* deprecate a module method when it is included into another class
+* allow for redirection of the warning to a different output stream
+* test that multiple calls from the same call site only output the alert once
+* global registry of all the deprecated methods and their call sites ala Logging
+* at_exit handler for final printout of all the call sites and their counts
+* all for warnings to be turned off based upon
+** environement variable DEPRECATABLE_WARNINGS=false
+** ruby warning level

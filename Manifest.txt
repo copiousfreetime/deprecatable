@@ -1,0 +1,8 @@
+.autotest
+History.rdoc
+Manifest.txt
+README.rdoc
+Rakefile
+bin/deprecatable
+lib/deprecatable.rb
+test/test_deprecatable.rb

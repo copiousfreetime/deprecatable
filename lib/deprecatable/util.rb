@@ -6,6 +6,7 @@ module Deprecatable
       call_line     = caller[1]
       file, line, _ = call_line.split(':')
       file          = File.expand_path( file )
+      line          = Float(line).to_i
       return file, line
     end
   end

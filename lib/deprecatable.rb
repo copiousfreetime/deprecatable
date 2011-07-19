@@ -30,20 +30,6 @@
 module Deprecatable
   VERSION = '1.0.0'
 
-  # Common utility functions used by all the Deprecatable modules and classes
-  module Util
-    def _dp_call_origin( stack, skip_after = nil )
-      file, line = nil, nil
-      loop do
-        file, line, _ = stack.shift.split(':')
-        file = File.expand_path( file )
-        break unless skip_after
-        skip_after = nil if skip_after == file 
-      end
-      return file, line
-    end
-  end
-
   # DeprecatedMethod holds all the information about a method that was marked 
   # as 'deprecated' through the Deprecatable Module. The Class, method name,
   # and the file and line number of the deprecated method are stored in 

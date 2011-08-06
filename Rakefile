@@ -24,6 +24,7 @@ Hoe.spec 'deprecatable' do
 
   # test with minitest
   self.extra_dev_deps << [ 'minitest', '~> 2.0.2']
+  self.extra_dev_deps << [ 'rcov', '~> 0.9.9']
   self.testlib = :minitest
 
 end

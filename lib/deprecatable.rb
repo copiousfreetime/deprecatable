@@ -25,17 +25,18 @@ module Deprecatable
   # Deprecate a method in the included class.
   #
   # method_name - The method in this class to deprecate.
-  # message     - A contextual message to output when the deprecated method is
-  #               invoked.
-  # year        - The year in which the deprecated method will be removed from
-  #               the system.
-  # month       - The month in which the deprecated method will be removed from
-  #               the system.
+  # options     - a hash of the current understood options:
+  #    :message   => override the default message that would be issued with this message
+  #    :year      => The year in which the deprecated method will be removed
+  #    :month     => The month in which the deprecated method will be removed
+  #    :namespace => The namespace under which this deprecated method will
+  #                  reside in the registry, by default it is the outermost
+  #                  module of the class.
   #
   # returns the instance of DeprecatedMethod created to track this deprecation.
-  def deprecate( method_name, message = nil, year = nil, month = nil )
+  def deprecate( method_name, options => {} )
     file, line = Util.location_of_caller
-    dm         = Deprecatable.registry.deprecated_method( self, method_name, file, line )
+    dm         = Deprecatable.registry.deprecated_method( self, method_name, file, line, options )
 
     if not method_defined?( dm.deprecated_method_name ) then
       alias_method dm.deprecated_method_name, method_name

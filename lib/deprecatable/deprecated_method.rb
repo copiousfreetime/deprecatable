@@ -1,11 +1,11 @@
 require 'deprecatable/util'
 module Deprecatable
-  # DeprecatedMethod holds all the information about a method that was marked 
+  # DeprecatedMethod holds all the information about a method that was marked
   # as 'deprecated' through the Deprecatable Module. The Class, method name,
-  # and the file and line number of the deprecated method are stored in 
+  # and the file and line number of the deprecated method are stored in
   # DeprecatedMethod.
   #
-  # It also is the location in which the calls to the deprected method are 
+  # It also is the location in which the calls to the deprected method are
   # stored. Each call to the deprecated method ends up with a call to 'mark'.
   # The 'mark' method records the origin location of where the deprecated method
   # was called, and the number of times that the deprecated method was called
@@ -13,7 +13,7 @@ module Deprecatable
   #
   # The first time a deprecated method is called from a particular origin, the
   # alert mechanism is invoked to tell the caller that they have called a
-  # deprecatd method. All subsequent calls to the deprecated method do not 
+  # deprecatd method. All subsequent calls to the deprecated method do not
   # alert, and the invocation count of that call is increased.
   class DeprecatedMethod
     include Util
@@ -21,11 +21,12 @@ module Deprecatable
     attr_reader :klass, :method, :file, :line
     attr_reader :invocations, :deprecated_method_name
 
-    def initialize( klass, method, file, line )
+    def initialize( klass, method, file, line, options = {} )
       @klass                  = klass
       @method                 = method
       @file                   = file
       @line                   = Float(line).to_i
+      @namespace              = options[:namespace] || default_namespace( klass )
       @invocations            = Hash.new( 0 )
       @deprecated_method_name = "_deprecated_#{method}"
     end
@@ -38,7 +39,7 @@ module Deprecatable
       end
       return @to_s
     end
-    
+
 
     # Record a call to a deprecated method. On the first call from a new call
     # site, do the alerting.
@@ -100,11 +101,11 @@ module Deprecatable
         lines         = caller_lines[start_line, count]
         number_width  = ("%d" % (start_line + count)).length
 
-        count.times do |x| 
+        count.times do |x|
           this_line = start_line + x
           prefix    = this_line == line_index ?  "--->" : " "*4
           number    = ("%d" % this_line).rjust( number_width )
-          lines[x]  = "#{prefix} #{number}: #{lines[x]}" 
+          lines[x]  = "#{prefix} #{number}: #{lines[x]}"
         end
         context << lines
         return context.flatten
@@ -115,6 +116,10 @@ module Deprecatable
     # A helper method to send data out using ruby warnings
     def _warn( msg = "" )
       warn "WARNING: #{msg.rstrip}"
+    end
+
+    def default_namespace( klass )
+      return klass.to_s.split('::').first
     end
   end
 end

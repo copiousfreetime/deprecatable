@@ -1,30 +1,48 @@
 = deprecatable
 
-* FIX (url)
+* http://github.com/copiousfreetime/deprecatable
+* http://www.copiousfreetime.org/projects/deprecatable
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Deprecatable is a library to help you, as a developer be proactive about people
+using your deprecated methods. When you mark methods as *deperecated* using
+Deprecatable, your users can receive a warning at the time the method is called
+and/or a final report of all the times that the deprecated method was called.
+The "noisiness" of this alerting is configurable.
 
-== FEATURES/PROBLEMS:
-
-* FIX (list of features or problems)
+Deperecatable records the location at which the deprecated method was called and
+can inform the user of the exact line of code that needs to be updated to
+deal with the deprecation alert.
 
 == SYNOPSIS:
 
-  FIX (code sample of usage)
+  class SomeClass
+    extend Deprecatable
+
+    def deprecate_me
+    ...
+    end
+    deprecated :deprecate_me
+  end
 
 == REQUIREMENTS:
 
-* FIX (list of requirements)
+No runtime requirements.
+will need a few dependencies. They will automatically be installed if you check
+out the source code from github above, and then run
+
+  rake newb
+
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* [sudo] gem install deprecatable
 
 == DEVELOPERS:
 
-After checking out the source, run:
+If you would like to contribute to the project, you will need to check out the
+source from http://github.com/copiousfreetime/deprecatable and then run:
 
   $ rake newb
 

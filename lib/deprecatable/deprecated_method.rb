@@ -18,29 +18,42 @@ module Deprecatable
   class DeprecatedMethod
     include Util
 
-    attr_reader :klass, :method, :file, :line
-    attr_reader :invocations, :deprecated_method_name
+    # The ruby class that has the method being deprecated
+    attr_reader :klass
 
-    def initialize( klass, method, file, line, options = {} )
+    # The method in the klass being deprecated
+    attr_reader :method
+
+    # The physical file in which the deprecated method was marked as deprecated
+    attr_reader :file
+
+    # The line number in the file in which the deprecated method was marked as
+    # deprecated. Line numbers start at 1
+    attr_reader :line_number
+
+    # When a method is deprecated, it is renamed and then wrapped. This is the
+    # rename of the original deprecated method.
+    attr_reader :deprecated_method_name
+
+    def initialize( klass, method, file, line_number )
       @klass                  = klass
       @method                 = method
-      @file                   = file
-      @line                   = Float(line).to_i
-      @namespace              = options[:namespace] || default_namespace( klass )
-      @invocations            = Hash.new( 0 )
+      @file                   = File.expand_path( file )
+      @line_number            = Float(line_number).to_i
       @deprecated_method_name = "_deprecated_#{method}"
     end
 
     # return a string showing deprecated method and its location
     def to_s
       unless @to_s then
-        target = @klass.kind_of?( Module) ? "#{@klass}." : "#{@klass.class}#"
-        @to_s = "#{target}#{@method} at #{@file}:#{line}"
+        target = @klass.kind_of?( Class ) ? "#{@klass}#" : "#{@klass}."
+        @to_s = "#{target}#{@method} at #{@file}:#{@line_number}"
       end
       return @to_s
     end
-
-
+  end
+end
+__END__
     # Record a call to a deprecated method. On the first call from a new call
     # site, do the alerting.
     #
@@ -116,10 +129,6 @@ module Deprecatable
     # A helper method to send data out using ruby warnings
     def _warn( msg = "" )
       warn "WARNING: #{msg.rstrip}"
-    end
-
-    def default_namespace( klass )
-      return klass.to_s.split('::').first
     end
   end
 end

@@ -1,13 +1,35 @@
 module Deprecatable
+  # A Container for the options of Deprecatable.
   #
-  # A Container for the options that make up deprecatable
+  # The available options are:
+  #
+  #    caller_context_padding - The number of lines before and after the call
+  #                             site of the deprecated method to record
+  #    alert_frequency        - The maximum number of times to alert for a given
+  #                             call to the deprecated method
+  #    at_exit_report         - Whether or not a deprecation report is issued
+  #                             when the program exits
+  #
+  # These options may also be overridden with environment varaibles
+  #
+  #   DEPRECATABLE_CALLER_CONTEXT_PADDING
+  #   DEPRECATABLE_ALERT_FREQUENCY
+  #   DEPRECATABLE_AT_EXIT_REPORT
   #
   class Options
+    # Create a new instance of Options. All of the default values for the
+    # options are set.
+    #
+    #   caller_context_padding - 2
+    #   has_at_exit_report     - true
+    #   alert_frequency        - 1
+    def initialize
+      @caller_context_padding = 2
+      @has_at_exit_report     = true
+      @alert_frequency        = 1
+    end
     # The number of lines of context surrounding the call site of the deprecated
     # method to display in the reports.
-    attr_reader :caller_context_padding
-
-    # Set the number of caller_context_padding lines
     #
     # count - The number of lines before and after the callsite to report.
     #         This must be a positive number.
@@ -17,27 +39,76 @@ module Deprecatable
       @caller_context_padding = count
     end
 
-    # Should a final report be output at the end of the program.
+    # Return the caller context padding.
+    #
+    # This may be overridden with the environment variable
+    # DEPRECATABLE_CALLER_CONTEXT_PADDING
+    def caller_context_padding
+      p = ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING']
+      return Float(p).to_i if p
+      return @caller_context_padding
+    end
+
+    # The maximum number of times an alert will be emitted.
+    #
+    # That is, when a deprecated method is called, this is the number of times
+    # to alert the user via the warning mechanism. This is record on a
+    # per-call-site count. This means, that if the same deprecated method is
+    # called from two different locations, it will alert up to this value for
+    # each location.
+    #
+    # This may be set to any number. Or to one of the special tokens
+    # :never, :once, :always, which are just user friendly references
+    # for 0, 1 and Infinity respectively
+    #
+    # The default is :once
+    #
+    # returns the curent value
+    def alert_frequency=( freq )
+      @alert_frequency = frequency_of( freq )
+    end
+
+    # Return the current value of 'alert_frequency'. This will return the
+    # Numeric value. If the alert_frequency was set with :never, :once or
+    # :always, the value that is returned here is the Numeric representation of
+    # that token.
+    #
+    # This may be overridden with the environment variable
+    # DEPRECATABLE_ALERT_FREQUENCY
+    def alert_frequency
+      p = ENV['DEPRECATABLE_ALERT_FREQUENCY']
+      return frequency_of(p) if p
+      return @alert_frequency
+    end
+
+    # Set whether or not the final at_exit_report should be emitted
     #
     # bool - true or false, shall the exit report be emitted?
     attr_writer :has_at_exit_report
-    def has_at_exit_report?; @has_at_exit_report; end
 
-    # How many times to send out the individual alerts.
-    #
-    # That is, when a deprecated method is called, this is the number of times
-    # to alert the user vial the warning mechanism.
-    #
-    # If this is set to a negative number, then alerting will happen with ever
-    # method call to the deprecated method.
-    #
-    # The default is 1
-    attr_reader :maximum_alert_count
+    # return the current vaelu of has_at_exit_report. This may be overridden
+    # with the environment variable DEPRECATABLE_HAS_AT_EXIT_REPORT. Setting the
+    # environment variable to 'true' will override the existing setting.
+    def has_at_exit_report?
+      return true if ENV['DEPRECATABLE_HAS_AT_EXIT_REPORT'] == "true"
+      return @has_at_exit_report
+    end
 
-    def initialize
-      @caller_context_padding = 2
-      @has_at_exit_report     = true
-      @maximum_alert_count    = 1
+    ##################################################################
+    private
+    ##################################################################
+
+    def frequency_of( frequency )
+      case frequency.to_s
+      when 'always'
+        (1.0/0.0)
+      when 'once'
+        1
+      when 'never'
+        0
+      else
+        Float(frequency).to_i
+      end
     end
   end
 end

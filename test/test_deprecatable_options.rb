@@ -7,6 +7,13 @@ class TestDeprecatableOptions < MiniTest::Unit::TestCase
     @options = Deprecatable::Options.new
   end
 
+  def teardown
+    ENV.keys.each do |k|
+      next unless k =~/^DEPRECATABLE/
+      ENV.delete( k )
+    end
+  end
+
   def test_defaults_exist
     assert_equal( 2    , @options.caller_context_padding )
     assert_equal( true , @options.has_at_exit_report?    )
@@ -30,7 +37,6 @@ class TestDeprecatableOptions < MiniTest::Unit::TestCase
     assert_equal( 4, @options.caller_context_padding )
     ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING'] = "10"
     assert_equal( 10, @options.caller_context_padding )
-    ENV.delete('DEPRECATABLE_CALLER_CONTEXT_PADDING')
   end
 
   def test_has_at_exit_report_may_be_turned_off
@@ -43,7 +49,6 @@ class TestDeprecatableOptions < MiniTest::Unit::TestCase
     refute @options.has_at_exit_report?
     ENV['DEPRECATABLE_HAS_AT_EXIT_REPORT'] = "true"
     assert @options.has_at_exit_report?, "has_at_exit_report? must be true"
-    ENV.delete('DEPRECATABLE_HAS_AT_EXIT_REPORT')
   end
 
   def test_alert_frequency_may_be_set

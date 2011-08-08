@@ -62,5 +62,17 @@ module Deprecatable
   def self.alerter
     @alerter
   end
+  def self.alerter=( a )
+    @alerter = a
+  end
 end
+require 'deprecatable/util'
+require 'deprecatable/call_site_context'
+require 'deprecatable/call_site'
 require 'deprecatable/deprecated_method'
+
+at_exit do
+  if ::Deprecatable.options.has_at_exit_report? then
+    ::Deprecatable.alerter.final_report
+  end
+end

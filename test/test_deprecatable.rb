@@ -79,8 +79,8 @@ class TestDeprecatable < MiniTest::Unit::TestCase
     end
     line = __LINE__ - 2
     lines = stderr.split(/\n/)
-    assert_equal( 84, lines.grep( /#{File.expand_path( __FILE__)}:#{line}/ ).size )
-      assert_equal( 42, lines.grep( /--->/ ).size )
+    assert_equal( 42, lines.grep( /#{File.expand_path( __FILE__)}:#{line}/ ).size )
+    assert_equal( 42, lines.grep( /--->/ ).size )
   end
 
   def test_raise_an_exception_if_deprecating_a_method_that_does_not_exist
@@ -100,17 +100,17 @@ class TestDeprecatable < MiniTest::Unit::TestCase
 
   def test_adds_an_additional_message_when_given
     @deprecatable_class.deprecate :deprecate_me, :message => "You should switch to using Something#bar"
-    assert_alert_match( /developer message : .* Something#bar/m, @deprecatable_class )
+    assert_alert_match( /\* You should switch to using Something#bar/m, @deprecatable_class )
   end
 
   def test_adds_a_removal_date_when_given
     @deprecatable_class.deprecate :deprecate_me, :removal_date => "2011-09-02"
-    assert_alert_match( /to be removed after : 2011-09-02/m, @deprecatable_class )
+    assert_alert_match( /Will be removed after 2011-09-02/m, @deprecatable_class )
   end
 
   def test_adds_a_removal_version_when_given
     @deprecatable_class.deprecate :deprecate_me, :removal_version => "4.2"
-    assert_alert_match( /to be removed in : Version 4.2/m, @deprecatable_class )
+    assert_alert_match( /Will be removed in version 4.2/m, @deprecatable_class )
   end
 
   def test_deprecating_an_included_method
@@ -139,5 +139,11 @@ class TestDeprecatable < MiniTest::Unit::TestCase
       klass.deprecate_me
     end
     assert_match( /Class Method KABOOM/, stderr )
+  end
+
+  def test_has_an_at_exit_handler
+    io = IO.popen( "ruby -Ilib examples/at_exit.rb 2>&1" )
+    lines = io.readlines.join('')
+    assert_match( /Deprecatable 'at_exit' Report/m, lines )
   end
 end

@@ -1,3 +1,8 @@
+require 'minitest/autorun'
+require 'deprecatable'
+
+::Deprecatable.options.has_at_exit_report = false
+
 module MiniTest
   class Unit
     class TestCase

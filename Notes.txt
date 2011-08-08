@@ -3,13 +3,10 @@
 * allow for redirection of the warning to a different output stream, or anything that respond_to?( :warn )
 * test that multiple calls from the same call site only output the alert once
 * test that multiple calls from two different sites are recorded differently
-* global registry of all the deprecated methods and their call sites ala Logging
-* options may be set on the per 'registry' entry item
 * at_exit handler for final printout of all the call sites and their counts
-* alert counts are used, and if they are set to a negaive number then they alert
-  with every call
+* alert counts can be set to never, one time or always
 * all for warnings to be turned off based upon
 ** environement variable DEPRECATABLE_WARNINGS=false
 ** ruby warning level
-
+* raises an error if deprecating a method that does not exist
 

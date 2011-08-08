@@ -15,7 +15,7 @@ module A
     end
     def deprecate_me
       @call_count += 1
-      "deprecate_me call #{@call_count}"
+      puts "deprecate_me call #{@call_count}"
     end
     deprecate :deprecate_me, :message => "This method is to be completely removed", :removal_version => "4.2"
   end
@@ -35,6 +35,7 @@ if $0 == __FILE__
 
   puts
   puts "Here are some example ways to run this program"
+  puts
 
   [ nil, "DEPRECATABLE_ALERT_FREQUENCY=" ].each do |env|
     %w[ never once always ].each do |env_setting|
@@ -48,6 +49,8 @@ if $0 == __FILE__
       end
     end
   end
+
+  puts
   puts "-" * 72
 
   Deprecatable.options.alert_frequency = ARGV.shift || 'once'

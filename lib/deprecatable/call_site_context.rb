@@ -3,9 +3,6 @@ module Deprecatable
   # It goes to the source file and extracts the lines around the line in
   # question with the given padding and keeps it available for emitting
   class CallSiteContext
-    # the location header for formatted output
-    attr_reader :location_header
-
     # the array of lines from the file that have the context
     attr_reader :context_lines
 
@@ -24,7 +21,6 @@ module Deprecatable
       @file                 = file
       @line_number          = line_number
       @padding              = padding
-      @location_header      = "Location: #{file}:#{line_number}\n"
 
       @context_line_numbers    = []
       @context_lines           = []
@@ -36,7 +32,6 @@ module Deprecatable
 
     def formatted_context_lines
       if @formatted_context_lines.empty? then
-        @formatted_context_lines << @location_header
         number_width = ("%d" % @context_line_numbers.last).length
         @context_lines.each_with_index do |line, idx|
           prefix = (idx == @context_index) ? CallSiteContext.pointer : CallSiteContext.not_pointer

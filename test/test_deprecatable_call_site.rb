@@ -1,4 +1,7 @@
 require 'helpers'
+# This file requires exact position of lines. If you should happent to chagen
+# tne numer of lines in this file that appear before the first test, some of the
+# tests will fail
 class TestDeprecatableCallSite < MiniTest::Unit::TestCase
   def setup
     @file = __FILE__
@@ -16,7 +19,6 @@ class TestDeprecatableCallSite < MiniTest::Unit::TestCase
 
   def test_captures_the_call_site_context
     context = [
-      "Location: #{File.expand_path(__FILE__)}:9\n",
       "      8:     @before = 'This is the line before'\n",
       "--->  9:     @line = __LINE__\n",
       "     10:     @after = 'This is the line after'\n",

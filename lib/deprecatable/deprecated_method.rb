@@ -53,7 +53,7 @@ module Deprecatable
     def to_s
       unless @to_s then
         target = @klass.kind_of?( Class ) ? "#{@klass.name}#" : "#{@klass.name}."
-        @to_s = "#{target}#{@method} at #{@file}:#{@line_number}"
+        @to_s = "#{target}#{@method} defined at #{@file}:#{@line_number}"
       end
       return @to_s
     end

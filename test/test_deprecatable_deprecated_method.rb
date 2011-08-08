@@ -47,11 +47,11 @@ class TestDeprecatableDeprecatedMethod < MiniTest::Unit::TestCase
   end
 
   def test_has_a_string_representation_of_a_deprecated_instance_method
-    assert_equal( "TestDeprecatableDeprecatedMethod::DeprecatableClass#m1 at #{File.expand_path(__FILE__)}:7", @dep_class.to_s )
+    assert_equal( "TestDeprecatableDeprecatedMethod::DeprecatableClass#m1 defined at #{File.expand_path(__FILE__)}:7", @dep_class.to_s )
   end
 
   def test_has_a_string_representation_of_a_deprecated_module_method
     dm = Deprecatable::DeprecatedMethod.new( @module, "m2", __FILE__, 11 )
-    assert_equal( "TestDeprecatableDeprecatedMethod::DeprecatableModule.m2 at #{File.expand_path(__FILE__)}:11", dm.to_s )
+    assert_equal( "TestDeprecatableDeprecatedMethod::DeprecatableModule.m2 defined at #{File.expand_path(__FILE__)}:11", dm.to_s )
   end
 end

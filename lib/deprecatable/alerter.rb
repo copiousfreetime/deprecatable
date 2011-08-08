@@ -16,7 +16,7 @@ module Deprecatable
       lines = deprecated_method_report( deprecated_method, call_site )
       lines << "To turn this report off do one of the following:"
       lines << "* in your ruby code set `Deprecatable.options.alert_frequency = :never`"
-      lines << "* set the environment variable `DEPRECATALBE_ALERT_FREQUENCY=\"never\"`"
+      lines << "* set the environment variable `DEPRECATABLE_ALERT_FREQUENCY=\"never\"`"
       lines << ""
       lines.each { |l| warn_with_prefix l }
     end
@@ -29,7 +29,7 @@ module Deprecatable
       lines << "To turn this report off do one of the following:"
       lines << ""
       lines << "* in your ruby code set `Deprecatable.options.has_at_exit_report = false`"
-      lines << "* set the environment variable `DEPRECATALBE_HAS_AT_EXIT_REPORT=\"false\"`"
+      lines << "* set the environment variable `DEPRECATABLE_HAS_AT_EXIT_REPORT=\"false\"`"
       lines << ""
 
 

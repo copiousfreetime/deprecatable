@@ -33,15 +33,20 @@ class TestDeprecatableDeprecatedMethod < MiniTest::Unit::TestCase
 
   def test_records_an_invocation_of_an_instance_method
     dc = @klass.new
-    m = dc.m1
+    m = nil
+    capture_io do
+      m = dc.m1
+    end
     assert_equal( "m1", m )
     assert_equal( 1, @dep_class.invocation_count )
   end
 
   def test_records_uniq_call_sites
     dc = @klass.new
-    3.times { dc.m1 }
-    3.times { dc.m1 }
+    capture_io do
+      3.times { dc.m1 }
+      3.times { dc.m1 }
+    end
     assert_equal( 6, @dep_class.invocation_count )
     assert_equal( 2, @dep_class.call_site_count )
   end

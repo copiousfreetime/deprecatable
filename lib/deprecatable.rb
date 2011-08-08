@@ -19,6 +19,7 @@
 #
 require 'deprecatable/options'
 require 'deprecatable/registry'
+require 'deprecatable/alerter'
 module Deprecatable
   VERSION = '1.0.0'
 
@@ -27,9 +28,10 @@ module Deprecatable
   # method_name - The method in this class to deprecate.
   # options     - a hash of the current understood options:
   #
-  #    :message   => override the default message that would be issued with this message
-  #    :year      => The year in which the deprecated method will be removed
-  #    :month     => The month in which the deprecated method will be removed
+  #    :message         => override the default message that would be issued with this message
+  #    :removal_date    => The date on which the deprecated method will be removed
+  #    :removal_version => The version on which the deprecated method will be
+  #                        removed
   #
   # returns the instance of DeprecatedMethod created to track this deprecation.
   def deprecate( method_name, options = {} )
@@ -53,6 +55,12 @@ module Deprecatable
   @options = Deprecatable::Options.new
   def self.options
     @options
+  end
+
+  # Access the global Alerter
+  @alerter = Deprecatable::Alerter.new
+  def self.alerter
+    @alerter
   end
 end
 require 'deprecatable/deprecated_method'

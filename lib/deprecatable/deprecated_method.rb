@@ -33,6 +33,16 @@ module Deprecatable
     # deprecated. Line numbers start at 1
     attr_reader :line_number
 
+    # An additional message to output with the alerts for this deprecated metho
+    attr_reader :message
+
+    # A possible removal date for when this deprecated method will be removed
+    # from the system
+    attr_reader :removal_date
+
+    # A possible removal version for when this deprecated method will be removed
+    attr_reader :removal_version
+
     # When a method is deprecated, it is renamed and then wrapped. This is the
     # rename of the original deprecated method.
     attr_reader :deprecated_method_name
@@ -45,6 +55,9 @@ module Deprecatable
       @deprecated_method_name = "_deprecated_#{method}"
       @invocations            = 0
       @call_sites             = Hash.new
+      @message                = options[:message]
+      @removal_date           = options[:removal_date]
+      @removal_version        = options[:removal_version]
       @to_s                   = nil
       insert_shim( self )
     end
@@ -61,6 +74,13 @@ module Deprecatable
     def log_invocation( file, line_number )
       call_site = call_site_for( file, line_number )
       call_site.increment_invocation_count
+      alert( call_site )
+    end
+
+    def alert( call_site )
+      if call_site.invocation_count <= ::Deprecatable.options.alert_frequency then
+        ::Deprecatable.alerter.alert( self, call_site )
+      end
     end
 
     # return the total number of invocations of the given method

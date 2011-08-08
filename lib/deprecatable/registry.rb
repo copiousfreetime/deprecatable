@@ -1,9 +1,7 @@
-require 'deprecatable/deprecated_method'
 require 'forwardable'
 
 module Deprecatable
-  # This is a registry of deprecated methods. It is really nothing more than a
-  # wrapper around a hash
+  # This holds pointers to all the instances of DeprecatedMethod
   class Registry
 
     extend Forwardable
@@ -14,18 +12,15 @@ module Deprecatable
     end
 
     # Register a method to be deprecated.
-    # 
-    # method - The method to deprecate.
-    # file   - The file in which the deprecated method is defined.
-    # line   - The line number in the file on which the method is defined.
     #
-    # Returns the DeprecatedMethod instance created.
-    def deprecated_method( klass, method, file, line )
-      dm = DeprecatedMethod.new( klass, method, file, line )
+    # method - then instance of DeprecatedMethod
+    #
+    def register( dm )
       @registry[dm] = true
       return dm
     end
 
+    # return all the DeprecatedMethod instances in the registry
     def items
       @registry.keys
     end

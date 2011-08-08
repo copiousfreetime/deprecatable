@@ -1,5 +1,4 @@
-require "minitest/autorun"
-require "deprecatable"
+require "helpers"
 
 class TestDeprecatable < MiniTest::Unit::TestCase
 

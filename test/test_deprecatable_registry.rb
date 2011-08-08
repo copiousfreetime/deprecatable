@@ -1,6 +1,4 @@
-require 'minitest/autorun'
-require 'deprecatable/registry'
-require 'deprecatable/deprecated_method'
+require 'helpers'
 
 class TestDeprecatableRegistry < MiniTest::Unit::TestCase
   class DeprecatedExample

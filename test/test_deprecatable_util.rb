@@ -1,5 +1,4 @@
-require "minitest/autorun"
-require "deprecatable/util"
+require "helpers"
 
 class TestDeprecatableUtil < MiniTest::Unit::TestCase
   def i_was_called

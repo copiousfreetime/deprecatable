@@ -1,7 +1,4 @@
-require 'minitest/autorun'
 require 'helpers'
-require 'deprecatable/call_site'
-
 class TestDeprecatableCallSite < MiniTest::Unit::TestCase
   def setup
     @file = __FILE__

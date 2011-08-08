@@ -3,9 +3,9 @@
 # Context line 3
 # Context line 4
 
-require 'minitest/autorun'
+
 require 'helpers'
-require 'deprecatable/call_site_context'
+
 # Context line 9
 # Context line 10
 # Context line 11

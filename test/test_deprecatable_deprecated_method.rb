@@ -1,6 +1,4 @@
-require "minitest/autorun"
-require "deprecatable/deprecated_method"
-
+require 'helpers'
 
 class TestDeprecatableDeprecatedMethod < MiniTest::Unit::TestCase
   def setup

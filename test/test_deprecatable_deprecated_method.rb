@@ -47,6 +47,7 @@ class TestDeprecatableDeprecatedMethod < MiniTest::Unit::TestCase
     end
     assert_equal( 6, @dep_class.invocation_count )
     assert_equal( 2, @dep_class.call_site_count )
+    assert_equal( 2, @dep_class.call_sites.size )
   end
 
   def test_has_a_string_representation_of_a_deprecated_instance_method

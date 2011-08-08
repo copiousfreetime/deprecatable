@@ -83,6 +83,11 @@ module Deprecatable
       end
     end
 
+    # return the CallSite objects
+    def call_sites
+      @call_sites.values
+    end
+
     # return the total number of invocations of the given method
     def invocation_count
       sum = 0

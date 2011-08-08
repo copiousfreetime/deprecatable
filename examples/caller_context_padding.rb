@@ -7,6 +7,10 @@
 #   ruby -Ilib examples/caller_context_padding.rb
 #
 require 'deprecatable'
+
+#----------------------------------------------------------------------
+# We create an example class with a deprecated method
+#----------------------------------------------------------------------
 module A
   class B
     extend Deprecatable
@@ -21,21 +25,25 @@ module A
   end
 end
 
-if $0 == __FILE__
+#----------------------------------------------------------------------
+# usage, you can ignore this for now, this will get printed out if you
+# do not put any commandline arguments down
+#----------------------------------------------------------------------
+def usage
+  puts <<__
+This is an example of showing how to affect the caller context padding
+You can change the caller_context_padding by
 
-  puts "This is an example of showing how to affect the caller context padding"
-  puts "You can change the caller_context_padding by"
-  puts
-  puts "  1) Setting `Deprecatable.options.caller_context_padding` in ruby code."
-  puts "  2) Setting the DEPRECATABLE_CALLER_CONTEXT_PADDING envionment variable."
-  puts
-  puts "They may be set to an integer value that is >= 1"
-  puts "When you use both (1) and (2) simultaneously, you will see that"
-  puts "setting the environment variable always overrides the code."
+  1) Setting `Deprecatable.options.caller_context_padding` in ruby code.
+  2) Setting the DEPRECATABLE_CALLER_CONTEXT_PADDING envionment variable.
 
-  puts
-  puts "Here are some example ways to run this program"
-  puts
+They may be set to an integer value that is >= 1
+When you use both (1) and (2) simultaneously, you will see that
+setting the environment variable always overrides the code.
+
+Here are some example ways to run this program"
+
+__
 
   [ nil, "DEPRECATABLE_CALLER_CONTEXT_PADDING=" ].each do |env|
     (1..3).each do |env_setting|
@@ -50,13 +58,22 @@ if $0 == __FILE__
     end
   end
   puts
-  puts "-" * 72
+  exit 1
+end
 
+if $0 == __FILE__
+  # Turning off the at exit report, for more information on them,
+  # see the examples/at_exit.rb
   Deprecatable.options.has_at_exit_report = false
-  Deprecatable.options.caller_context_padding = Float(ARGV.shift || 2 ).to_i
+
+  # capture the parameters, we'll run if there is a commandline parameter
+  # of if the environment variable is et
+  caller_context_padding = ARGV.shift
+  usage unless caller_context_padding || ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING']
+  Deprecatable.options.caller_context_padding = Float( caller_context_padding ).to_i if caller_context_padding
 
   puts
-  puts "Running with ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING'] => #{ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING']}"
+  puts "Running with ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING']  => #{ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING']}"
   puts "Running with Deprecatable.options.caller_context_padding => #{Deprecatable.options.caller_context_padding}"
   puts "-" * 72
   puts

@@ -7,6 +7,9 @@
 #   ruby -Ilib examples/at_exit.rb
 #
 require 'deprecatable'
+#----------------------------------------------------------------------
+# We create an example class with some deprecated methods
+#----------------------------------------------------------------------
 module A
   class B
     extend Deprecatable
@@ -23,9 +26,15 @@ module A
 end
 
 if $0 == __FILE__
-  b = A::B.new
 
+  # turn off the individual alerting. To see more about the behavior, look at
+  # examples/alert_frequency.rb
   Deprecatable.options.alert_frequency = :never
+
+  # Make sure we have the at exit return turned on, it should be by default
+  Deprecatable.options.has_at_exit_report = true
+
+  b = A::B.new
 
   4.times do
     # Context before 1.1

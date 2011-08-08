@@ -7,6 +7,10 @@
 #   ruby -Ilib examples/alert_frequency.rb
 #
 require 'deprecatable'
+
+#----------------------------------------------------------------------
+# We create an example class with a deprecated method
+#----------------------------------------------------------------------
 module A
   class B
     extend Deprecatable
@@ -21,21 +25,27 @@ module A
   end
 end
 
-if $0 == __FILE__
 
-  puts "This is an example of showing how to affect the alert frequency"
-  puts "You can change the alert frequency by:"
-  puts
-  puts "  1) Setting `Deprecatable.options.alert_freqeuncy` in ruby code."
-  puts "  2) Setting the DEPRECATABLE_ALERT_FREQUENCY envionment variable."
-  puts
-  puts "They may be set to one of the following values:  'never', 'once', 'always'"
-  puts "When you use both (1) and (2) simultaneously, you will see that"
-  puts "setting the environment variable always overrides the code."
+#----------------------------------------------------------------------
+# usage, you can ignore this for now, this will get printed out if you
+# do not put any commandline arguments down
+#----------------------------------------------------------------------
+def usage
+  puts <<__
+This is an example of showing how to affect the alert frequency
+You can change the alert frequency by:
 
-  puts
-  puts "Here are some example ways to run this program"
-  puts
+  1) Setting `Deprecatable.options.alert_freqeuncy` in ruby code.
+  2) Setting the DEPRECATABLE_ALERT_FREQUENCY envionment variable.
+
+They may be set to one of the following values:  'never', 'once', 'always'
+When you use both (1) and (2) simultaneously, you will see that
+setting the environment variable always overrides the code.
+
+Here are some example ways to run this program
+
+__
+
 
   [ nil, "DEPRECATABLE_ALERT_FREQUENCY=" ].each do |env|
     %w[ never once always ].each do |env_setting|
@@ -51,13 +61,23 @@ if $0 == __FILE__
   end
 
   puts
-  puts "-" * 72
+  exit 1
+end
 
-  Deprecatable.options.alert_frequency = ARGV.shift || 'once'
+if $0 == __FILE__
+  # Turning off the at exit report, for more information on them,
+  # see the examples/at_exit.rb
   Deprecatable.options.has_at_exit_report = false
 
+  # capture the parameters, we'll run if there is a commandline parameter
+  # of if the environment variable is et
+  alert_frequency = ARGV.shift
+  usage unless alert_frequency || ENV['DEPRECATABLE_ALERT_FREQUENCY']
+
+  Deprecatable.options.alert_frequency = alert_frequency if alert_frequency
+
   puts
-  puts "Running with ENV['DEPRECATABLE_ALERT_FREQUENCY'] => #{ENV['DEPRECATABLE_ALERT_FREQUENCY']}"
+  puts "Running with ENV['DEPRECATABLE_ALERT_FREQUENCY']  => #{ENV['DEPRECATABLE_ALERT_FREQUENCY']}"
   puts "Running with Deprecatable.options.alert_frequency => #{Deprecatable.options.alert_frequency}"
   puts "-" * 72
   puts

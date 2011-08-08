@@ -24,10 +24,16 @@ module Deprecatable
     #   has_at_exit_report     - true
     #   alert_frequency        - 1
     def initialize
+      reset
+    end
+
+    # set the options to their default values
+    def reset
       @caller_context_padding = 2
       @has_at_exit_report     = true
       @alert_frequency        = 1
     end
+
     # The number of lines of context surrounding the call site of the deprecated
     # method to display in the reports.
     #

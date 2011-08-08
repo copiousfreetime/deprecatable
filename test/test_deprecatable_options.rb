@@ -20,8 +20,15 @@ class TestDeprecatableOptions < MiniTest::Unit::TestCase
   end
 
   def test_caller_context_padding_raises_error_if_set_to_negative_number
-    assert_raises( ArgumentError, "caller_context_mapping must be >= 0" ) do 
+    assert_raises( ArgumentError, "caller_context_mapping must be > 0" ) do
       @options.caller_context_padding = -1
+    end
+  end
+
+  def test_caller_context_padding_raises_error_if_environemtn_set_to_negative_number
+    ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING'] = "-1"
+    assert_raises( ArgumentError, "caller_context_mapping must be > 0" ) do
+      @options.caller_context_padding
     end
   end
 

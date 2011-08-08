@@ -51,7 +51,11 @@ module Deprecatable
     # DEPRECATABLE_CALLER_CONTEXT_PADDING
     def caller_context_padding
       p = ENV['DEPRECATABLE_CALLER_CONTEXT_PADDING']
-      return Float(p).to_i if p
+      if p then
+        p = Float(p).to_i
+        raise ArgumentError, "DEPRECATABLE_CALLER_CONTEXT_APDDING must have a value > 0, it is currently #{p}" unless p > 0
+        return p
+      end
       return @caller_context_padding
     end
 

@@ -1,4 +1,6 @@
+require 'deprecatable'
 require 'deprecatable/util'
+require 'deprecatable/call_site'
 module Deprecatable
   # DeprecatedMethod holds all the information about a method that was marked
   # as 'deprecated' through the Deprecatable Module. The Class, method name,
@@ -41,15 +43,65 @@ module Deprecatable
       @file                   = File.expand_path( file )
       @line_number            = Float(line_number).to_i
       @deprecated_method_name = "_deprecated_#{method}"
+      @invocations            = 0
+      @call_sites             = Hash.new
+      @to_s                   = nil
+      insert_shim( self )
     end
 
     # return a string showing deprecated method and its location
     def to_s
       unless @to_s then
-        target = @klass.kind_of?( Class ) ? "#{@klass}#" : "#{@klass}."
+        target = @klass.kind_of?( Class ) ? "#{@klass.name}#" : "#{@klass.name}."
         @to_s = "#{target}#{@method} at #{@file}:#{@line_number}"
       end
       return @to_s
+    end
+
+    def log_invocation( file, line_number )
+      call_site = call_site_for( file, line_number )
+      call_site.increment_invocation_count
+    end
+
+    # return the total number of invocations of the given method
+    def invocation_count
+      sum = 0
+      @call_sites.values.each { |cs| sum += cs.invocation_count }
+      return sum
+    end
+
+    # return the total number of unique call sites for this method
+    def call_site_count
+      @call_sites.size
+    end
+
+
+    ###################################################################
+    private
+    ###################################################################
+    def call_site_for( file, line_number )
+      cs = @call_sites[CallSite.gen_key( file, line_number)]
+      if cs.nil? then
+        cs = CallSite.new( file, line_number, ::Deprecatable.options.caller_context_padding  )
+        @call_sites[cs.key] = cs
+      end
+      return cs
+    end
+
+
+    # Create the wrapper around the original method that records the invocation
+    # and then deletages to the original method
+    def insert_shim( dm )
+      if not klass.method_defined?( dm.deprecated_method_name ) then
+
+        klass.module_eval do
+          alias_method dm.deprecated_method_name, dm.method
+          define_method( dm.method ) do |*args, &block|
+            dm.log_invocation( *Util.location_of_caller )
+            send( dm.deprecated_method_name, *args, &block )
+          end
+        end
+      end
     end
   end
 end
@@ -95,37 +147,6 @@ __END__
         _warn
       end
     end
-
-    # Generate the caller context as an Array of Strings.
-    #
-    # file   - The full pathname to the file in which the call site is located.
-    # lineno - The line number in the file. Lines in files start at 1, not 0.
-    #
-    # Returns an array of strings that format a nice context around the line in
-    # question.
-    #
-    def caller_context( file, lineno )
-      if File.readable?( file ) then
-        line_index    = lineno - 1
-        caller_lines  = IO.readlines( file )
-        context       = [ "Location: #{file}:#{line}" ]
-        start_line    = line_index  - Deprecatable.options.caller_context_padding
-        count         = (2 * Deprecatable.options.caller_context_padding) + 1
-        lines         = caller_lines[start_line, count]
-        number_width  = ("%d" % (start_line + count)).length
-
-        count.times do |x|
-          this_line = start_line + x
-          prefix    = this_line == line_index ?  "--->" : " "*4
-          number    = ("%d" % this_line).rjust( number_width )
-          lines[x]  = "#{prefix} #{number}: #{lines[x]}"
-        end
-        context << lines
-        return context.flatten
-      end
-      return []
-    end
-
     # A helper method to send data out using ruby warnings
     def _warn( msg = "" )
       warn "WARNING: #{msg.rstrip}"

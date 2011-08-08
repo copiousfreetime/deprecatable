@@ -9,6 +9,9 @@ module Deprecatable
     # the array of lines from the file that have the context
     attr_reader :context_lines
 
+    # the array of line numbers from the file that have the context
+    attr_reader :context_line_numbers
+
     def self.pointer
       "--->"
     end
@@ -21,23 +24,27 @@ module Deprecatable
       @file                 = file
       @line_number          = line_number
       @padding              = padding
-      @location_header      = "Location: #{file}:#{line_number}"
+      @location_header      = "Location: #{file}:#{line_number}\n"
 
-      @context_line_numbers = []
-      @context_lines        = []
-      @context_index        = @padding + 1
+      @context_line_numbers    = []
+      @context_lines           = []
+      @context_index           = @padding + 1
+      @formatted_context_lines = []
+
       extract_context()
     end
 
     def formatted_context_lines
-      fc = [ @location_header ]
-      number_width = ("%d" % @context_line_numbers.last).length
-      @context_lines.each_with_index do |line, idx|
-        prefix = (idx == @context_index) ? CallSiteContext.pointer : CallSiteContext.not_pointer
-        number = ("%d" % @context_line_numbers[idx]).rjust( number_width )
-        fc << "#{prefix} #{number}: #{line}"
+      if @formatted_context_lines.empty? then
+        @formatted_context_lines << @location_header
+        number_width = ("%d" % @context_line_numbers.last).length
+        @context_lines.each_with_index do |line, idx|
+          prefix = (idx == @context_index) ? CallSiteContext.pointer : CallSiteContext.not_pointer
+          number = ("%d" % @context_line_numbers[idx]).rjust( number_width )
+          @formatted_context_lines << "#{prefix} #{number}: #{line}"
+        end
       end
-      return fc
+      return @formatted_context_lines
     end
 
     private

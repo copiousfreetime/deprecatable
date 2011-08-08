@@ -11,7 +11,7 @@ module Deprecatable
     # This just prints it out using the global 'warn' method
     def alert( deprecated_method, call_site )
       long = [ "Deprecated method:",
-               "#{deprecated_method.klass.name}##{deprecated_method.method}",
+               "#{deprecated_method.klass}##{deprecated_method.method}",
                "invoked" ]
       warn long.join(' ')
       w = 20  

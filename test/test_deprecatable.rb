@@ -96,6 +96,7 @@ class TestDeprecatable < MiniTest::Unit::TestCase
       i.deprecate_me
     end
     assert_match( regex, stderr )
+    return stderr
   end
 
   def test_adds_an_additional_message_when_given
@@ -111,5 +112,33 @@ class TestDeprecatable < MiniTest::Unit::TestCase
   def test_adds_a_removal_version_when_given
     @deprecatable_class.deprecate :deprecate_me, :removal_version => "4.2"
     assert_alert_match( /to be removed in : Version 4.2/m, @deprecatable_class )
+  end
+
+  def test_deprecating_an_included_method
+    mod = Module.new do
+      extend Deprecatable
+      def deprecate_me; end
+      deprecate :deprecate_me, :message => "KABOOM!"
+    end
+    klass = Class.new do
+      include mod
+    end
+
+    assert_alert_match( /KABOOM!/, klass )
+  end
+
+  def test_deprecating_a_class_method
+    klass = Class.new do
+      class << self
+        extend Deprecatable
+        def deprecate_me; end
+        deprecate :deprecate_me, :message => "Class Method KABOOM!"
+      end
+    end
+
+    stdout, stderr = capture_io do
+      klass.deprecate_me
+    end
+    assert_match( /Class Method KABOOM/, stderr )
   end
 end

@@ -55,5 +55,4 @@ module Deprecatable
     @options
   end
 end
-require 'deprecatable/invocation_event'
 require 'deprecatable/deprecated_method'

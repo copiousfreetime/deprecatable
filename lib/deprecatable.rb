@@ -26,27 +26,19 @@ module Deprecatable
   #
   # method_name - The method in this class to deprecate.
   # options     - a hash of the current understood options:
+  #
   #    :message   => override the default message that would be issued with this message
   #    :year      => The year in which the deprecated method will be removed
   #    :month     => The month in which the deprecated method will be removed
-  #    :namespace => The namespace under which this deprecated method will
-  #                  reside in the registry, by default it is the outermost
-  #                  module of the class.
   #
   # returns the instance of DeprecatedMethod created to track this deprecation.
-  def deprecate( method_name, options => {} )
+  def deprecate( method_name, options = {} )
     file, line = Util.location_of_caller
-    dm         = Deprecatable.registry.deprecated_method( self, method_name, file, line, options )
+    dm         = DeprecatedMethod.new( self, method_name, file, line, options )
 
-    if not method_defined?( dm.deprecated_method_name ) then
-      alias_method dm.deprecated_method_name, method_name
+    Deprecatable.registry.register( dm )
 
-      define_method( method_name ) do |*args, &block|
-        dm.mark( *Util.location_of_caller )
-        send( dm.deprecated_method_name, *args, &block )
-      end
-    end
-    return dm
+   return dm
   end
 
   # Access the global registry
@@ -63,3 +55,5 @@ module Deprecatable
     @options
   end
 end
+require 'deprecatable/invocation_event'
+require 'deprecatable/deprecated_method'

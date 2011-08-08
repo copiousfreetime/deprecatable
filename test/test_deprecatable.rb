@@ -3,24 +3,32 @@ require "deprecatable"
 
 class TestDeprecatable < MiniTest::Unit::TestCase
 
-  # extend Deprecatable
+  def setup
+    Deprecatable.registry.clear
 
-  # def deprecate_me; end
-  # deprecate :deprecate_me
+    @deprecated_class = Class.new do
+      extend Deprecatable
+      def deprecate_me; end
+      deprecate :deprecate_me
+    end
+  end
 
-  # def setup
-    # @registry = Deprecatable.registry
-    # @dm = @registry.items.first
-  # end
+  def test_deprecated_method_is_regsitered
+    assert_equal( 1, Deprecatable.registry.size )
+  end
 
-  # def teardown
-    # @registry.clear
-  # end
+  def test_call_site_is_recorded
+    i = @deprecated_class.new
+    i.deprecate_me
+    assert_equal( 1, Deprecatable.registry.items.first.invocation_count )
+  end
 
-  # def test_deprecate_origin_is_recorded
-    # deprecate_me
-    # file, line = File.expand_path(__FILE__), __LINE__ - 1
-    # assert_equal( 1, @registry.size )
-    # assert_equal( "#{file}:#{line}", @dm.invocations.keys.first.to_s )
-  # end
+  def test_different_call_sites_are_recorded_independently
+    i = @deprecated_class.new
+    42.times { i.deprecate_me }
+    24.times { i.deprecate_me }
+    dm = Deprecatable.registry.items.first
+    assert_equal( 66, dm.invocation_count )
+    assert_equal( 2, dm.call_site_count )
+  end
 end

@@ -53,11 +53,6 @@ module Deprecatable
       @context ||= CallSiteContext.new( @file, @line_number, @context_padding )
     end
 
-    # Return the context lines
-    def context_lines
-      context.context_lines
-    end
-
     # return the formatted context lines
     def formatted_context_lines
       context.formatted_context_lines

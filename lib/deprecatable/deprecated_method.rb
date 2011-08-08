@@ -37,7 +37,7 @@ module Deprecatable
     # rename of the original deprecated method.
     attr_reader :deprecated_method_name
 
-    def initialize( klass, method, file, line_number )
+    def initialize( klass, method, file, line_number, options = {} )
       @klass                  = klass
       @method                 = method
       @file                   = File.expand_path( file )

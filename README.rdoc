@@ -1,11 +1,11 @@
-= deprecatable
+= Deprecatable
 
 * http://github.com/copiousfreetime/deprecatable
 * http://www.copiousfreetime.org/projects/deprecatable
 
 == DESCRIPTION:
 
-Deprecatable is a library to help you, as a developer be proactive about people
+Deprecatable is a library to help you, as a developer, be proactive about people
 using your deprecated methods. When you mark methods as *deperecated* using
 Deprecatable, your users can receive a warning at the time the method is called
 and/or a final report of all the times that the deprecated method was called.
@@ -29,11 +29,6 @@ deal with the deprecation alert.
 == REQUIREMENTS:
 
 No runtime requirements.
-will need a few dependencies. They will automatically be installed if you check
-out the source code from github above, and then run
-
-  rake newb
-
 
 == INSTALL:
 
@@ -42,12 +37,19 @@ out the source code from github above, and then run
 == DEVELOPERS:
 
 If you would like to contribute to the project, you will need to check out the
-source from http://github.com/copiousfreetime/deprecatable and then run:
+source from http://github.com/copiousfreetime/deprecatable and then if you are
+using a system installed ruby:
 
   $ rake newb
 
+If you are using a non-root installed ruby, for instance RVM, then you
+probably want to run:
+
+  $ NOSUDO=true rake newb
+
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
+
 
 == LICENSE:
 

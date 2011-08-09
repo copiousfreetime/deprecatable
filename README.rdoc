@@ -5,15 +5,21 @@
 
 == DESCRIPTION:
 
-Deprecatable is a library to help you, as a developer, be proactive about people
-using your deprecated methods. When you mark methods as *deperecated* using
-Deprecatable, your users can receive a warning at the time the method is called
-and/or a final report of all the times that the deprecated method was called.
-The "noisiness" of this alerting is configurable.
+Deprecatable is a library to help you, as a developer, deprecate your API and be
+proactive about helping people who use your library find where they need to
+update.
 
-Deperecatable records the location at which the deprecated method was called and
-can inform the user of the exact line of code that needs to be updated to
-deal with the deprecation alert.
+When using Deprecatable, you mark methods as 'deperecated' and then the users of
+your API will receive a helpful alert showing the exact line of code where they
+called the deprecated API, and what they need to do to fix it (although you need
+to supply this piece of information).
+
+Users will receive, by default, a single alert for each unique location a
+deprecated API method is invoked. They will also receive a final report
+detailing all the locations where deprecated APIs were invoked.
+
+The "noisiness" of the alerting and the final report is all configurable, via
+both code, and environment variables. See Deprecatable::Options.
 
 == SYNOPSIS:
 

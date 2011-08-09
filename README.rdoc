@@ -3,7 +3,7 @@
 * http://github.com/copiousfreetime/deprecatable
 * http://www.copiousfreetime.org/projects/deprecatable
 
-== DESCRIPTION:
+== DESCRIPTION
 
 Deprecatable is a library to help you, as a developer, deprecate your API and be
 proactive about helping people who use your library find where they need to
@@ -21,7 +21,7 @@ detailing all the locations where deprecated APIs were invoked.
 The "noisiness" of the alerting and the final report is all configurable, via
 both code, and environment variables. See Deprecatable::Options.
 
-== SYNOPSIS:
+== SYNOPSIS
 
   class SomeClass
     extend Deprecatable
@@ -32,15 +32,15 @@ both code, and environment variables. See Deprecatable::Options.
     deprecated :deprecate_me
   end
 
-== REQUIREMENTS:
+== REQUIREMENTS
 
 No runtime requirements.
 
-== INSTALL:
+== INSTALL
 
-* [sudo] gem install deprecatable
+* sudo gem install deprecatable
 
-== DEVELOPERS:
+== DEVELOPERS
 
 If you would like to contribute to the project, you will need to check out the
 source from http://github.com/copiousfreetime/deprecatable and then if you are
@@ -57,7 +57,7 @@ This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
 
 
-== LICENSE:
+== LICENSE
 
 (The ISC LICENSE)
 

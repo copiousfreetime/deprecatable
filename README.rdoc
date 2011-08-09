@@ -34,11 +34,110 @@ both code, and environment variables. See Deprecatable::Options.
 
 == REQUIREMENTS
 
-No runtime requirements.
+No runtime requirements, other than Ruby itself.
 
 == INSTALL
 
   $ [sudo] gem install deprecatable
+
+== EXAMPLES
+
+All of the examles here are included in the examples/ directory.
+
+=== Alerts
+
+Default alerting. Uses Ruby's 'warn' capability, which sends the output to
+standard error.
+
+  $ ruby -Ilib examples/alert_frequency.rb once > /dev/null
+  DEPRECATION WARNING: `A::B#deprecate_me`
+  DEPRECATION WARNING: -------------------
+  DEPRECATION WARNING:
+  DEPRECATION WARNING: * Originally defined at /Users/jeremy/Projects/deprecatable/examples/alert_frequency.rb:24
+  DEPRECATION WARNING: * This method is to be completely removed
+  DEPRECATION WARNING: * Will be removed in version 4.2
+  DEPRECATION WARNING:
+  DEPRECATION WARNING: Called from /Users/jeremy/Projects/deprecatable/examples/alert_frequency.rb:89
+  DEPRECATION WARNING:
+  DEPRECATION WARNING:          87:     # Context before 1.1
+  DEPRECATION WARNING:          88:     # Context before 1.2
+  DEPRECATION WARNING:     ---> 89:     b.deprecate_me
+  DEPRECATION WARNING:          90:     # Context after 1.1
+  DEPRECATION WARNING:          91:     # Context after 1.2
+  DEPRECATION WARNING:
+  DEPRECATION WARNING: To turn this report off do one of the following:
+  DEPRECATION WARNING: * in your ruby code set `Deprecatable.options.alert_frequency = :never`
+  DEPRECATION WARNING: * set the environment variable `DEPRECATABLE_ALERT_FREQUENCY="never"`
+  DEPRECATION WARNING:
+
+Lets try that again and shut off the output
+
+  $ DEPRECATABLE_ALERT_FREQUENCY=never ruby -Ilib examples/alert_frequency.rb once > /dev/null
+  $
+
+=== A final report when the process exits.
+
+As a bonus, the 'at_exit' report is valid Markdown.
+
+  $ ruby -Ilib examples/at_exit.rb > /dev/null
+  Deprecatable 'at_exit' Report
+  =============================
+
+  To turn this report off do one of the following:
+
+  * in your ruby code set `Deprecatable.options.has_at_exit_report = false`
+  * set the environment variable `DEPRECATABLE_HAS_AT_EXIT_REPORT="false"`
+
+  `A::B#deprecate_me_2`
+  ---------------------
+
+  * Originally defined at /Users/jeremy/Projects/deprecatable/examples/at_exit.rb:24
+  * This method is to be completely removed
+  * Will be removed after 2020-02-20
+
+  Called 2 time(s) from /Users/jeremy/Projects/deprecatable/examples/at_exit.rb:64
+
+           62:     # Context before 4.1
+           63:     # Context before 4.2
+      ---> 64:     b.deprecate_me_2
+           65:     # Context after 4.1
+           66:     # Context after 4.2
+
+  Called 4 time(s) from /Users/jeremy/Projects/deprecatable/examples/at_exit.rb:48
+
+           46:     # Context before 2.1
+           47:     # Context before 2.2
+      ---> 48:     b.deprecate_me_2
+           49:     # Context after 2.1
+           50:     # Context after 2.2
+
+  `A::B#deprecate_me_1`
+  ---------------------
+
+  * Originally defined at /Users/jeremy/Projects/deprecatable/examples/at_exit.rb:19
+  * This method is to be completely removed
+  * Will be removed in version 4.2
+
+  Called 4 time(s) from /Users/jeremy/Projects/deprecatable/examples/at_exit.rb:42
+
+           40:     # Context before 1.1
+           41:     # Context before 1.2
+      ---> 42:     b.deprecate_me_1
+           43:     # Context after 1.1
+           44:     # Context after 1.2
+
+  Called 2 time(s) from /Users/jeremy/Projects/deprecatable/examples/at_exit.rb:58
+
+           56:     # Context before 3.1
+           57:     # Context before 3.2
+      ---> 58:     b.deprecate_me_1
+           59:     # Context after 3.1
+           60:     # Context after 3.2
+
+And again, shutting off the output:
+
+  $ DEPRECATABLE_HAS_AT_EXIT_REPORT="false" ruby -Ilib examples/at_exit.rb > /dev/null
+  $
 
 == DEVELOPERS
 

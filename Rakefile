@@ -24,10 +24,9 @@ Hoe.spec 'deprecatable' do
 
   # Publish rdoc to a designated remote location
   with_config do |config, _|
-    self.rdoc_locations << File.join(config['rdoc_remote_root'], self.name)
+    self.rdoc_locations << File.join(config['rdoc_remote_root'], self.remote_rdoc_dir)
   end
 
-  # test with minitest
   self.extra_dev_deps << [ 'rcov', '~> 0.9.10']
 
 end

@@ -1,3 +1,4 @@
+gem "minitest" # required for ruby 1.9 and 'rake rcov'
 require 'minitest/autorun'
 require 'deprecatable'
 

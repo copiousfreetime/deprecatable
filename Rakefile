@@ -23,9 +23,7 @@ Hoe.spec 'deprecatable' do
   self.extra_rdoc_files = [ self.readme_file, self.history_file ]
 
   # test with minitest
-  self.extra_dev_deps << [ 'minitest', '~> 2.0.2']
-  self.extra_dev_deps << [ 'rcov', '~> 0.9.9']
-  self.testlib = :minitest
+  self.extra_dev_deps << [ 'rcov', '~> 0.9.10']
 
 end
 

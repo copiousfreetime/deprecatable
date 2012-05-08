@@ -29,7 +29,7 @@ both code, and environment variables. See Deprecatable::Options.
     def deprecate_me
     ...
     end
-    deprecated :deprecate_me
+    deprecate :deprecate_me
   end
 
 == REQUIREMENTS
